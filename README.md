@@ -1,6 +1,6 @@
 # detail-cpu-memory
-# requiment 
-pip3 install -r requiments.txt
+# requirement 
+pip3 install -r requirements.txt
 
 # run api
 uvicorn main:app --host [ip] --port 8098 --reload
