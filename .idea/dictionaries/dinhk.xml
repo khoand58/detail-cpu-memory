@@ -2,6 +2,9 @@
   <dictionary name="dinhk">
     <words>
       <w>detailcpu</w>
+      <w>detailcpumemory</w>
+      <w>nomarl</w>
+      <w>starttime</w>
     </words>
   </dictionary>
 </component>

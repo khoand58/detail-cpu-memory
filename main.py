@@ -1,44 +1,48 @@
-def detailCpu_Mem():
-    import os, re
-    import platform
-    cpu = 0.0
-    memory = 0.0
-    if platform.system() == 'Linux':
-        os.system('ps -o %mem, ax |sort -b -k3 -r |head -150 >/opt/Tmp/detailcpu.txt')
-        os.system('ps -o %cpu, ax |sort -b -k3 -r |head -150 >/opt/Tmp/detailmem.txt')
-        detailcpu = open('/opt/Tmp/detailcpu.txt', "r")
-        detailmem = open('/opt/Tmp/detailmem.txt', "r")
-        for i in detailcpu:
-            if not re.search("%CPU", i):
-                cpu += float(i)
-                print(i)
-                if float(i) == 0.0:
-                    break
-        for i in detailmem:
-            if not re.search("%MEM", i):
-                memory += float(i)
-                print(i)
-                if float(i) == 0.0:
-                    break
-    elif platform.system() == 'Windows':
-        print(platform.system())
-        detailcpu = open('detailcpu.txt', "r")
-        detailmem = open('detailcpu.txt', "r")
-        for i in detailcpu:
-            if not re.search('%CPU', i):
+import uvicorn
+from fastapi import FastAPI
+import detail_cpu_memory as dt
+from pydantic import BaseModel
 
-                cpu += float(i)
-                print(i)
-                if float(i) == 0.0:
-                    break
-        for i in detailmem:
-            if not re.search('%MEM', i):
+import time
 
-                memory += float(i)
-                print(i)
-                if float(i) == 0.0:
-                    break
-    return cpu, memory
+# from datetime import datetime, time, timedelta
+#
+app = FastAPI()
 
 
-detailCpu_Mem()
+class Detailcpumemory(BaseModel):
+    Duration: int
+
+
+@app.get("/detail_cpu_memory1/")
+def detail_cpu_memory1():
+    status = 'Nomarl'
+    cpu, mem = dt.detailCpu_Mem()
+    print(cpu)
+    print(mem)
+    if cpu > 80.0 or mem > 80.0:
+        status = 'Critical'
+    elif cpu > 70.0 or mem > 70.0:
+        status = 'Warning'
+    return {
+        "status": status,
+    }
+
+
+@app.post("/detail_cpu_memory2/")
+async def detail_cpu_memory2(detailcpumemory: Detailcpumemory):
+    status = 'Nomarl'
+    cpu1, mem1 = dt.detailCpu_Mem()
+    print(cpu1)
+    print(mem1)
+    time.sleep(detailcpumemory.Duration * 60)
+    cpu2, mem2 = dt.detailCpu_Mem()
+    print(cpu2)
+    print(mem2)
+    if (cpu2 - cpu1) > 30.0 or (mem2 - mem1) > 30.0:
+        status = 'Critical'
+    print(detailcpumemory)
+    return {
+        "status": status,
+        "Duration": detailcpumemory.Duration,
+    }
