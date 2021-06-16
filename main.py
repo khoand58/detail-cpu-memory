@@ -38,7 +38,7 @@ def detailCpu_Mem():
                 print(i)
                 if float(i) == 0.0:
                     break
-    return cpu
+    return cpu, memory
 
 
 detailCpu_Mem()
