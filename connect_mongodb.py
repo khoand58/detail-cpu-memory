@@ -1,9 +1,12 @@
 from pymongo import MongoClient
 
-client = MongoClient("mongodb://42.114.245.120:27098")
 
-db = client['push']
-cpumem = db['cpumem']
+def db():
+    client = MongoClient("mongodb://42.114.245.120:27098")
+
+    db = client['push']
+    cpumem = db['cpumem']
+    return cpumem
 
 # print(db)
 # job = 'dev'
