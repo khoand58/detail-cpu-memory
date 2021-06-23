@@ -11,17 +11,17 @@ def detailCpu_Mem():
         for i in detailcpu:
             if not re.search("%CPU", i):
                 cpu += float(i)
-                print(i)
+                #print(i)
                 if float(i) == 0.0:
                     break
         for i in detailmem:
             if not re.search("%MEM", i):
                 memory += float(i)
-                print(i)
+                #print(i)
                 if float(i) == 0.0:
                     break
-    elif platform.system() == 'Windows':
-        print(platform.system())
+    elif platform.system() == 'Windows': 
+        #print(platform.system())
         detailcpu = open('detailcpu.txt', "r")
         detailmem = open('detailmem.txt', "r")
         for i in detailcpu:
