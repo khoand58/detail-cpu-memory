@@ -8,7 +8,8 @@ def db():
     cpumem = db['cpumem']
     return cpumem
 
-# print(db)
+
+print(db())
 # job = 'dev'
 
 # Dev-Staging-245-120
