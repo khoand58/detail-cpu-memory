@@ -4,6 +4,7 @@
       <w>cpumem</w>
       <w>detailcpu</w>
       <w>detailcpumemory</w>
+      <w>detailmem</w>
       <w>nomarl</w>
       <w>starttime</w>
     </words>

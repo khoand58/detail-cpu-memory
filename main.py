@@ -7,7 +7,7 @@ import pprint
 import time
 import datetime
 
-print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
+# print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
 
 # from datetime import datetime, time, timedelta
 #
@@ -26,33 +26,41 @@ def detail_cpu_memory1(job: str):
     dtime = datetime.datetime.now()
     dtime = dtime + datetime.timedelta(minutes=-1)
     dtime = dtime.strftime("%Y-%m-%d %H:%M")
-    print(dtime)
+    # print(dtime)
     # get list host
-    # =================
+    # ==============================
     data = mongodb.db().find(query)
     for i in data:
         list_host = i['list_host']
-    # ==================
+    # ==============================
 
     # get date time get cpu mem
-    # =============================
+    # ==============================
     for host in list_host:
         data = mongodb.db().find(query)
         for i in data:
             for h in reversed(i[host]):
                 if h["date_push"] == dtime:
-                    if h["cpu"] >= 70 or h["mem"] >= 70:
-                        status = "Warning"
-                        tmp = [host, status]
-                        result.append(tmp)
-                    elif h["cpu"] >= 80 or h["mem"] >= 80:
-                        status = "Critical"
-                        tmp = [host, status]
-                        result.append(tmp)
-                    else:
-                        status = "OK"
-                        tmp = [host, status]
-                        result.append(tmp)
+                    tmp = [host]
+                    if 80 > h["cpu"] >= 70:
+                        status = "Warning cpu "
+                        tmp.append(status)
+                    if 80 > h["mem"] >= 70:
+                        status = "Warning memory"
+                        tmp.append(status)
+                    if h["cpu"] >= 80:
+                        status = "Critical cpu"
+                        tmp.append(status)
+                    if h["mem"] >= 80:
+                        status = "Critical memory"
+                        tmp.append(status)
+                    if h["cpu"] < 70:
+                        status = "OK cpu"
+                        tmp.append(status)
+                    if h["mem"] < 70:
+                        status = "OK memory"
+                        tmp.append(status)
+                    result.append(tmp)
     # ======================================
     return {
         "result": result,
@@ -89,19 +97,34 @@ async def detail_cpu_memory2(job: str, detailcpumemory: Detailcpumemory):
                         if h1["date_push"] == dtimeStart:
                             cpu1 = h1["cpu"]
                             mem1 = h1["mem"]
+                            tmp = [host]
                             # print(h["date_push"])
-                            if (cpu2 - cpu1) >= 10 or (mem2 - mem1) >= 10:
-                                status = "Warning"
-                                tmp = {host, status}
-                                result.append(tmp)
-                            elif (cpu2 - cpu1) >= 30 or (mem2 - mem1) >= 30:
+                            if 30 > (cpu2 - cpu1) >= 20:
+                                status = "Warning cpu"
+                                tmp.append(status)
+                            if 30 > (mem2 - mem1) >= 20:
+                                status = "Warning memory"
+                                tmp.append(status)
+                                # tmp = {host, status}
+                                # result.append(tmp)
+                            if (cpu2 - cpu1) >= 30:
+                                status = "Critical cpu"
+                                tmp.append(status)
+                                # tmp = {host, status}
+                                # result.append(tmp)
+                            if (mem2 - mem1) >= 30:
                                 status = "Critical"
-                                tmp = {host, status}
-                                result.append(tmp)
-                            else:
-                                status = "OK"
-                                tmp = {host, status}
-                                result.append(tmp)
+                                tmp.append(status)
+                                # tmp = {host, status}
+                                # result.append(tmp)
+                            if (cpu2 - cpu1) < 20:
+                                status = "OK cpu"
+                                tmp.append(status)
+                            if (mem2 - mem1) < 20:
+                                status = "OK memory"
+                                tmp.append(status)
+                                # tmp = {host, status}
+                            result.append(tmp)
     # ======================================
     return {
         "result": result,
